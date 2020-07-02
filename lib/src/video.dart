@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:orientation/orientation.dart';
@@ -403,14 +404,15 @@ class _AwsomeVideoPlayerState extends State<AwsomeVideoPlayer>
 
   /// 创建video controller
   VideoPlayerController createVideoPlayerController() {
+    if(widget.dataSource is File)
+      {
+        return VideoPlayerController.file(widget.dataSource);
+      }
+
     final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
-    final fileRegx = new RegExp(r'^(file):\/\/([\w.]+\/?)\S*');
     final isNetwork = netRegx.hasMatch(widget.dataSource);
-    final isFile = fileRegx.hasMatch(widget.dataSource);
     if (isNetwork) {
       return VideoPlayerController.network(widget.dataSource);
-    } else if (isFile) {
-      return VideoPlayerController.file(widget.dataSource);
     } else {
       return VideoPlayerController.asset(widget.dataSource);
     }
